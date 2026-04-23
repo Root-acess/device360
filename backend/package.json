@@ -2,6 +2,7 @@
   "name": "device360-backend",
   "version": "1.0.0",
   "description": "Node.js backend with Firebase Admin + Firestore",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
