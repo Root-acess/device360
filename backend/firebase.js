@@ -1,4 +1,4 @@
-const admin = require("firebase-admin");
+import admin from "firebase-admin";
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -15,10 +15,12 @@ if (!admin.apps.length) {
   });
 }
 
-// Point to your "device" Firestore database
+// Firestore
 const db = admin.firestore();
 db.settings({ databaseId: "device" });
 
+// Auth
 const auth = admin.auth();
 
-module.exports = { admin, db, auth };
+// ✅ EXPORTS (ES MODULE)
+export { admin, db, auth };
