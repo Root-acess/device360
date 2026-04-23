@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { PhoneStep, OTPStep, NameStep, AddressStep, TimeSlotStep } from './contact/ContactSteps';
-import type { StepProps, AddressFields } from '../../types';
+import { PhoneStep } from './contact/PhoneStep';
+import { OTPStep } from './contact/OTPStep';
+import { NameStep, AddressStep, TimeSlotStep } from './contact/ContactSteps';import type { StepProps, AddressFields } from '../../types';
 
 const BACKEND = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 

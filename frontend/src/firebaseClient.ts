@@ -14,6 +14,3 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
 
-if (import.meta.env.DEV) {
-  auth.settings.appVerificationDisabledForTesting = true;
-}

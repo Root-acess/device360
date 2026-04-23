@@ -4,16 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Device360 — Mobile repairs in 60 minutes. Watch your repair LIVE. Free doorstep pickup and delivery."
-    />
+    <meta name="description" content="Device360 — Mobile repairs in 60 minutes. Watch your repair LIVE. Free doorstep pickup and delivery." />
     <title>Device360 — Mobile Repair in 60 Minutes</title>
-    <script type="module" crossorigin src="/assets/index-BOCRZnaZ.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-0vzjG6J5.css">
+    <script type="module" crossorigin src="/assets/index-CU3caGvB.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BZF6owQ6.css">
   </head>
   <body>
+    <!--
+      #recaptcha-root lives here, OUTSIDE #root.
+      React never touches this div — it cannot be unmounted.
+      The verifier is attached to this div once at page load.
+    -->
+    <div id="recaptcha-root" style="position:fixed;bottom:0;right:0;z-index:9999;width:0;height:0;overflow:hidden;"></div>
     <div id="root"></div>
-    <div id="recaptcha-root"></div>
   </body>
 </html>

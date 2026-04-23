@@ -1,0 +1,13 @@
+dist
+index.html
+node_modules
+package-lock.json
+package.json
+postcss.config.js
+public
+src
+tailwind.config.js
+test.txt
+tsconfig.json
+tsconfig.node.json
+vite.config.ts
