@@ -1,11 +1,11 @@
-
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import authRoutes from "./routes/auth.js"; // ✅ move here
 
 dotenv.config();
 
-const app = express(); // ✅ MUST BE FIRST
+const app = express();
 
 app.use(express.json());
 
@@ -34,9 +34,8 @@ app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
-// ✅ YOUR ROUTES (example)
-// import authRoutes from "./routes/auth.js";
-// app.use("/api/auth", authRoutes);
+// ✅ ROUTES
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 5000;
 
