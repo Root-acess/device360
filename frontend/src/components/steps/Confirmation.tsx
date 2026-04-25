@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Phone, Clock, MapPin, MessageCircle, Video, Zap } from 'lucide-react';
+import {
+  CheckCircle, Phone, Clock, MapPin, MessageCircle,
+  Video, Zap, Share2, Copy, ExternalLink,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { StepProps, AddressFields } from '../../types';
 
@@ -10,6 +13,7 @@ export const Confirmation: React.FC<StepProps> = ({ formData }) => {
   const navigate = useNavigate();
   const isLive = formData.issue?.liveRepair;
   const [videoLink, setVideoLink] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!isLive || !formData.bookingId) return;
@@ -33,100 +37,221 @@ export const Confirmation: React.FC<StepProps> = ({ formData }) => {
   })();
 
   const handleWhatsApp = () => {
-    const msg = encodeURIComponent(`Hi! Booking confirmed.\nID: #${formData.bookingId}\nDevice: ${formData.brand?.name} ${formData.model}\nIssue: ${formData.issue?.name}\nPickup: ${formData.timeSlot}\nAddress: ${addrStr}`);
+    const msg = encodeURIComponent(
+      `Hi! My booking is confirmed.\n\n` +
+      `📋 Booking ID: #${formData.bookingId}\n` +
+      `📱 Device: ${formData.brand?.name} ${formData.model}\n` +
+      `🔧 Issue: ${formData.issue?.name}\n` +
+      `🕐 Pickup: ${formData.timeSlot}\n` +
+      `📍 Address: ${addrStr}`
+    );
     window.open(`https://wa.me/919876543210?text=${msg}`, '_blank');
   };
 
-  return (
-    <div className="space-y-5">
-      {/* Success animation */}
-      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', duration: 0.5 }} className="flex justify-center">
-        <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
-          <CheckCircle className="w-12 h-12 text-green-600" />
-        </div>
-      </motion.div>
+  const copyBookingId = async () => {
+    try {
+      await navigator.clipboard.writeText(`#${formData.bookingId}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* silent */ }
+  };
 
+  const shareBooking = async () => {
+    try {
+      await navigator.share({
+        title: 'My Repair Booking',
+        text: `Track my repair: #${formData.bookingId}`,
+        url: `${window.location.origin}/dashboard/${formData.bookingId}`,
+      });
+    } catch { /* user cancelled */ }
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* ── Success animation ─────────────────────────────────────── */}
       <div className="text-center">
-        <h2 className="text-2xl font-extrabold text-gray-900">Booking Confirmed!</h2>
-        <p className="text-gray-400 mt-1">Thank you, {formData.name}. We've received your request.</p>
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', duration: 0.6, bounce: 0.4 }}
+          className="inline-flex"
+        >
+          <div className="relative">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-xl shadow-green-200">
+              <CheckCircle className="w-12 h-12 text-white" />
+            </div>
+            {/* Rings */}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0.8 }}
+              animate={{ scale: 1.6, opacity: 0 }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut' }}
+              className="absolute inset-0 rounded-full border-2 border-green-400"
+            />
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0.6 }}
+              animate={{ scale: 2, opacity: 0 }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut', delay: 0.3 }}
+              className="absolute inset-0 rounded-full border-2 border-green-300"
+            />
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mt-4"
+        >
+          <h2 className="text-2xl font-black text-gray-900">Booking Confirmed! 🎉</h2>
+          <p className="text-gray-400 mt-1 text-sm">
+            Thank you, <span className="font-bold text-gray-700">{formData.name}</span>. We've got your request!
+          </p>
+        </motion.div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
-        <div>
-          <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">Booking ID</p>
-          <p className="text-2xl font-extrabold text-gray-900" data-testid="booking-id">#{formData.bookingId || 'PENDING'}</p>
+      {/* ── Booking ID card ───────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-6 text-white"
+      >
+        <div className="flex items-start justify-between mb-5">
+          <div>
+            <p className="text-gray-400 text-xs font-semibold uppercase tracking-widest mb-1">Booking ID</p>
+            <p className="text-4xl font-black tracking-tight" data-testid="booking-id">
+              #{formData.bookingId || 'PENDING'}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={copyBookingId}
+              className="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all"
+              title="Copy booking ID"
+            >
+              {copied
+                ? <CheckCircle className="w-4 h-4 text-green-400" />
+                : <Copy className="w-4 h-4 text-gray-300" />
+              }
+            </button>
+            <button
+              onClick={shareBooking}
+              className="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all"
+              title="Share booking"
+            >
+              <Share2 className="w-4 h-4 text-gray-300" />
+            </button>
+          </div>
         </div>
 
         {/* 60-min badge */}
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-blue-50 border border-blue-100">
-          <Zap className="w-4 h-4 text-blue-600 flex-shrink-0" />
-          <p className="text-xs text-blue-700 font-medium">60-minute repair promise. Pickup & drop not included.</p>
+        <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-amber-500/20 border border-amber-500/30 mb-5">
+          <Zap className="w-4 h-4 text-amber-400 flex-shrink-0" />
+          <p className="text-xs text-amber-300 font-medium">
+            60-minute repair promise. Pickup & drop not included.
+          </p>
         </div>
 
         {/* Live repair */}
         {isLive && (
-          <div className="p-4 rounded-xl bg-green-50 border border-green-200">
+          <div className="p-3 rounded-2xl bg-green-500/20 border border-green-500/30 mb-5">
             <div className="flex items-start gap-3">
-              <Video className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+              <div className="w-8 h-8 rounded-xl bg-green-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Video className="w-4 h-4 text-white" />
+              </div>
               <div className="flex-1">
-                <p className="font-bold text-green-800 text-sm">✅ Eligible for LIVE Repair</p>
+                <p className="font-bold text-green-300 text-sm flex items-center gap-2">
+                  LIVE Repair Eligible
+                  <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                </p>
                 {videoLink ? (
-                  <a href={videoLink} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 mt-2 px-4 py-2 rounded-lg bg-green-600 text-white text-xs font-bold hover:bg-green-700">
-                    <Video className="w-3.5 h-3.5" /> Watch Live Repair
+                  <a
+                    href={videoLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 rounded-xl bg-green-500 text-white text-xs font-bold hover:bg-green-600 transition-all"
+                  >
+                    <Video className="w-3 h-3" /> Watch Live Repair
+                    <ExternalLink className="w-3 h-3" />
                   </a>
                 ) : (
-                  <p className="text-xs text-green-700 mt-1">You'll receive a live video link via SMS & WhatsApp once repair starts.</p>
+                  <p className="text-xs text-green-400/80 mt-1">
+                    Live link will appear via SMS & WhatsApp once repair starts.
+                  </p>
                 )}
               </div>
             </div>
           </div>
         )}
 
-        {/* Details */}
-        <div className="space-y-3 pt-3 border-t border-gray-100">
+        {/* Details grid */}
+        <div className="space-y-3 border-t border-white/10 pt-4">
           <div className="flex items-start gap-3">
-            <Phone className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
+            <div className="w-8 h-8 rounded-xl bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+              <Phone className="w-3.5 h-3.5 text-blue-400" />
+            </div>
             <div>
-              <p className="font-semibold text-gray-800 text-sm">We'll call you soon</p>
-              <p className="text-xs text-gray-400">Team will confirm via {formData.phone} within 15 min</p>
+              <p className="font-bold text-white text-sm">We'll call you soon</p>
+              <p className="text-xs text-gray-400">Confirmation via {formData.phone} within 15 min</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <MapPin className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
+            <div className="w-8 h-8 rounded-xl bg-violet-500/20 flex items-center justify-center flex-shrink-0">
+              <MapPin className="w-3.5 h-3.5 text-violet-400" />
+            </div>
             <div>
-              <p className="font-semibold text-gray-800 text-sm">Pickup at {formData.timeSlot}</p>
-              <p className="text-xs text-gray-400">{addrStr}</p>
+              <p className="font-bold text-white text-sm">Pickup at {formData.timeSlot}</p>
+              <p className="text-xs text-gray-400 leading-relaxed">{addrStr}</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <Clock className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+            <div className="w-8 h-8 rounded-xl bg-green-500/20 flex items-center justify-center flex-shrink-0">
+              <Clock className="w-3.5 h-3.5 text-green-400" />
+            </div>
             <div>
-              <p className="font-semibold text-gray-800 text-sm">Estimated: {formData.pricing?.time}</p>
-              <p className="text-xs text-gray-400">{formData.issue?.name} on {formData.brand?.name} {formData.model}</p>
+              <p className="font-bold text-white text-sm">Estimated: {formData.pricing?.time}</p>
+              <p className="text-xs text-gray-400">
+                {formData.issue?.name} on {formData.brand?.name} {formData.model}
+              </p>
             </div>
           </div>
         </div>
+      </motion.div>
 
-        <div className="pt-3 border-t border-gray-100 text-center">
-          <p className="text-xs text-gray-400">Need help? <a href="tel:+919876543210" className="text-blue-600 font-semibold">+91 98765 43210</a></p>
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <button onClick={handleWhatsApp}
-          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#25D366] text-white font-bold hover:bg-[#1fb855] transition-all shadow-md"
-          data-testid="whatsapp-chat-button">
-          <MessageCircle className="w-5 h-5" /> Chat on WhatsApp
+      {/* ── CTA Buttons ───────────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="space-y-3"
+      >
+        <button
+          onClick={handleWhatsApp}
+          className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl bg-[#25D366] text-white font-black text-sm hover:bg-[#1fb855] transition-all shadow-lg shadow-green-200 active:scale-95"
+          data-testid="whatsapp-chat-button"
+        >
+          <MessageCircle className="w-5 h-5" />
+          Chat on WhatsApp
         </button>
+
         {formData.bookingId && (
-          <button onClick={() => navigate(`/dashboard/${formData.bookingId}`)}
-            className="w-full py-3 rounded-xl border-2 border-blue-200 text-blue-600 font-bold hover:bg-blue-50 transition-all text-sm"
-            data-testid="track-repair-button">
-            Track Repair Status →
+          <button
+            onClick={() => navigate(`/dashboard/${formData.bookingId}`)}
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl border-2 border-blue-200 text-blue-600 font-black text-sm hover:bg-blue-50 transition-all active:scale-95"
+            data-testid="track-repair-button"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Track Repair Status
           </button>
         )}
-      </div>
+
+        <a
+          href="tel:+919876543210"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-all"
+        >
+          <Phone className="w-4 h-4" /> +91 98765 43210
+        </a>
+      </motion.div>
     </div>
   );
 };

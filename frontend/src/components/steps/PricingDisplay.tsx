@@ -1,89 +1,149 @@
-import { ChevronLeft, CheckCircle, Video, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ChevronLeft, CheckCircle, Video, Zap, Shield, Truck, Star } from 'lucide-react';
 import type { StepProps } from '../../types';
 
-export const PricingDisplay: React.FC<StepProps> = ({ formData, goToNextStep, goToPreviousStep }) => {
+export const PricingDisplay: React.FC<StepProps> = ({
+  formData,
+  goToNextStep,
+  goToPreviousStep,
+}) => {
   const { brand, model, pricing, issue } = formData;
   const isLive = issue?.liveRepair;
+  const savings = pricing?.oldPrice ? pricing.oldPrice - pricing.price : 0;
 
   return (
     <div className="space-y-4">
-      {/* Price card */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-        <div className="text-center mb-6">
-          <h2 className="text-xl font-extrabold text-gray-900 mb-1">Your repair quote</h2>
-          <p className="text-sm text-gray-400">Transparent pricing, no hidden charges</p>
+      {/* Header */}
+      <div className="text-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 mb-3">
+          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+          <span className="text-xs font-semibold text-blue-600 tracking-wide">Step 4 of 4</span>
         </div>
+        <h2 className="text-2xl font-black text-gray-900 tracking-tight">Your Repair Quote</h2>
+        <p className="text-sm text-gray-400 mt-1">Transparent pricing, no hidden charges</p>
+      </div>
 
+      {/* ── Price hero card ───────────────────────────────────────── */}
+      <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-6 text-white overflow-hidden shadow-xl">
+        {/* Decorative circles */}
+        <div className="absolute top-0 right-0 w-40 h-40 rounded-full bg-white/5 -translate-y-16 translate-x-16" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full bg-white/5 translate-y-12 -translate-x-12" />
+
+        {/* Live repair badge */}
         {isLive && (
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-green-50 border border-green-200 mb-6">
-            <div className="w-9 h-9 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0">
+          <div className="relative flex items-center gap-2.5 p-3 rounded-2xl bg-green-500/20 border border-green-500/30 mb-5">
+            <div className="w-8 h-8 rounded-xl bg-green-500 flex items-center justify-center flex-shrink-0">
               <Video className="w-4 h-4 text-white" />
             </div>
             <div>
-              <p className="font-bold text-green-800 text-sm flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                Eligible for LIVE Repair
+              <p className="font-bold text-green-300 text-xs flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                LIVE Repair Eligible
               </p>
-              <p className="text-xs text-green-700 mt-0.5">Watch your repair via real-time video stream</p>
+              <p className="text-xs text-green-400/80 mt-0.5">Watch via real-time video stream</p>
             </div>
           </div>
         )}
 
-        <div className="space-y-4 pb-6 border-b border-gray-100">
-          <div className="flex justify-between items-start">
-            <p className="text-sm text-gray-400">Device</p>
-            <p className="font-bold text-gray-900 text-right">{brand?.name} {model}</p>
+        {/* Device & service */}
+        <div className="relative space-y-3 mb-5 pb-5 border-b border-white/10">
+          <div className="flex justify-between items-center">
+            <p className="text-gray-400 text-xs font-semibold uppercase tracking-wide">Device</p>
+            <p className="font-bold text-sm">{brand?.name} {model}</p>
           </div>
-          <div className="flex justify-between items-start">
-            <p className="text-sm text-gray-400">Service</p>
+          <div className="flex justify-between items-center">
+            <p className="text-gray-400 text-xs font-semibold uppercase tracking-wide">Service</p>
             <div className="text-right">
-              <p className="font-bold text-gray-900">{pricing?.name}</p>
-              <p className="text-xs text-gray-400 mt-0.5">Est. time: {pricing?.time}</p>
+              <p className="font-bold text-sm">{pricing?.name}</p>
+              <p className="text-xs text-gray-400 mt-0.5">Est. {pricing?.time}</p>
             </div>
           </div>
         </div>
 
-        <div className="pt-6">
-          <p className="text-sm text-gray-400 mb-2">Total amount</p>
-          <div className="flex items-baseline gap-3 mb-1">
-            {pricing?.oldPrice && <span className="text-xl text-gray-400 line-through">₹{pricing.oldPrice}</span>}
-            <span className="text-4xl font-extrabold text-gray-900" data-testid="price-amount">₹{pricing?.price}</span>
+        {/* Price */}
+        <div className="relative">
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wide mb-2">Total Amount</p>
+          <div className="flex items-end gap-3 mb-1">
+            {pricing?.oldPrice && (
+              <span className="text-xl text-gray-500 line-through mb-0.5">₹{pricing.oldPrice}</span>
+            )}
+            <motion.span
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, type: 'spring' }}
+              className="text-5xl font-black tracking-tight"
+              data-testid="price-amount"
+            >
+              ₹{pricing?.price}
+            </motion.span>
           </div>
-          <p className="text-xs text-gray-400">Includes parts + labour + GST</p>
+          {savings > 0 && (
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/20 border border-green-500/30">
+              <Star className="w-3 h-3 text-green-400" />
+              <span className="text-xs font-bold text-green-400">You save ₹{savings}!</span>
+            </div>
+          )}
+          <p className="text-xs text-gray-500 mt-2">Includes parts + labour + GST</p>
         </div>
+      </div>
 
-        <div className="mt-6 space-y-2.5 pt-6 border-t border-gray-100">
+      {/* ── 60-min badge ─────────────────────────────────────────── */}
+      <div className="flex items-center gap-3 px-5 py-4 rounded-2xl bg-amber-50 border border-amber-100">
+        <div className="w-9 h-9 rounded-xl bg-amber-400 flex items-center justify-center flex-shrink-0">
+          <Zap className="w-4 h-4 text-white" />
+        </div>
+        <div>
+          <p className="font-black text-amber-800 text-sm">60-Minute Repair Promise</p>
+          <p className="text-xs text-amber-600 mt-0.5">
+            Pickup & drop not included. Repair done within 60 mins of reaching our lab.
+          </p>
+        </div>
+      </div>
+
+      {/* ── Included benefits ─────────────────────────────────────── */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+        <p className="text-sm font-black text-gray-900 mb-4">What's Included</p>
+        <div className="grid grid-cols-1 gap-3">
           {[
-            '6-month warranty on all repairs',
-            'Genuine parts guaranteed',
-            'Free doorstep pickup & delivery',
-            ...(isLive ? ['Real-time video tracking included'] : []),
-          ].map((item) => (
-            <div key={item} className="flex items-center gap-2.5 text-sm">
-              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-              <span className="text-gray-600">{item}</span>
+            { icon: Shield,    text: '6-month warranty on all repairs',         color: 'text-blue-600',   bg: 'bg-blue-50'   },
+            { icon: CheckCircle,text: 'Genuine OEM parts guaranteed',           color: 'text-green-600',  bg: 'bg-green-50'  },
+            { icon: Truck,      text: 'Free doorstep pickup & delivery',        color: 'text-violet-600', bg: 'bg-violet-50' },
+            ...(isLive
+              ? [{ icon: Video, text: 'Real-time live video tracking included', color: 'text-green-600', bg: 'bg-green-50' }]
+              : []
+            ),
+          ].map(({ icon: Icon, text, color, bg }) => (
+            <div key={text} className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-xl ${bg} flex items-center justify-center flex-shrink-0`}>
+                <Icon className={`w-4 h-4 ${color}`} />
+              </div>
+              <span className="text-sm text-gray-700 font-medium">{text}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* 60-min badge */}
-      <div className="flex items-center gap-3 px-5 py-4 rounded-xl bg-blue-50 border border-blue-100">
-        <Zap className="w-5 h-5 text-blue-600 flex-shrink-0" />
-        <div>
-          <p className="font-bold text-blue-800 text-sm">60-Minute Repair Promise</p>
-          <p className="text-xs text-blue-600 mt-0.5">Pickup & drop not included. Repair done within 60 mins of reaching our lab.</p>
-        </div>
-      </div>
-
+      {/* Actions */}
       <div className="flex gap-3">
-        <button onClick={goToPreviousStep} className="flex items-center gap-1.5 px-5 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 transition-all" data-testid="back-button">
+        <button
+          onClick={goToPreviousStep}
+          className="flex items-center gap-1.5 px-5 py-3.5 rounded-2xl border-2 border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 hover:border-gray-300 transition-all"
+          data-testid="back-button"
+        >
           <ChevronLeft className="w-4 h-4" /> Back
         </button>
-        <button onClick={goToNextStep} className="flex-1 py-3 rounded-xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 shadow-md transition-all" data-testid="proceed-to-fix-button">
+        <button
+          onClick={goToNextStep}
+          className="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 text-white font-black text-sm hover:from-blue-700 hover:to-blue-800 shadow-lg shadow-blue-200 transition-all active:scale-95"
+          data-testid="proceed-to-fix-button"
+        >
           Book This Repair →
         </button>
       </div>
+
+      <p className="text-center text-xs text-gray-400">
+        No payment now — pay only after repair is done ✓
+      </p>
     </div>
   );
 };
