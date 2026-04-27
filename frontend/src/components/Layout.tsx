@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X, MapPin, Phone, Mail, Clock, Instagram, Twitter, Facebook, Youtube } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X, MapPin, Phone, Mail, Clock, Instagram, Twitter, Facebook, Youtube, ChevronDown } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiPhone } from 'react-icons/fi';
 import logo from '../assets/logo3.png';
@@ -10,9 +10,18 @@ interface LayoutProps {
 }
 
 const POPULAR_LOCATIONS = [
-  'Indiranagar', 'Koramangala', 'Whitefield', 'Marathahalli',
-  'HSR Layout', 'Bannerghatta Road', 'Electronic City', 'Hoskote',
-  'Jayanagar', 'Malleshwaram', 'Yelahanka', 'Sarjapur Road',
+  'Indiranagar',
+  'Koramangala',
+  'Whitefield',
+  'Marathahalli',
+  'HSR Layout',
+  'Bannerghatta Road',
+  'Electronic City',
+  'Hoskote',
+  'Jayanagar',
+  'Malleshwaram',
+  'Yelahanka',
+  'Sarjapur Road',
 ];
 
 const TOP_BANNER_ITEMS = [
@@ -22,8 +31,40 @@ const TOP_BANNER_ITEMS = [
   '📍 Serving all of Bengaluru',
 ];
 
+const LOCATION_STORAGE_KEY = 'device360Location';
+
+const setSelectedLocation = (location: string) => {
+  localStorage.setItem(LOCATION_STORAGE_KEY, location);
+  window.dispatchEvent(new Event('device360-location-change'));
+};
+
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState('Bengaluru');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const syncLocation = () => {
+      setCurrentLocation(localStorage.getItem(LOCATION_STORAGE_KEY) || 'Bengaluru');
+    };
+
+    syncLocation();
+    window.addEventListener('storage', syncLocation);
+    window.addEventListener('device360-location-change', syncLocation as EventListener);
+
+    return () => {
+      window.removeEventListener('storage', syncLocation);
+      window.removeEventListener('device360-location-change', syncLocation as EventListener);
+    };
+  }, []);
+
+  const handleLocationClick = (loc: string) => {
+    setSelectedLocation(loc);
+    navigate(`/repair/${loc.toLowerCase().replace(/\s+/g, '-')}`);
+    setMobileMenuOpen(false);
+  };
+
+  const navLocationLabel = currentLocation || 'Bengaluru';
 
   return (
     <div className="min-h-screen bg-white">
@@ -76,8 +117,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-white/98 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-
+          <div className="flex justify-between items-center h-16 gap-4">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 shrink-0" data-testid="logo-link">
               <img
@@ -100,8 +140,14 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               </Link>
             </div>
 
-            {/* Desktop CTA — icons only */}
-            <div className="hidden md:flex items-center gap-2">
+            {/* Desktop right side */}
+            <div className="hidden md:flex items-center gap-3">
+              <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-blue-50 border border-blue-100 text-sm font-semibold text-blue-700">
+                <MapPin className="w-4 h-4 text-blue-500" />
+                {navLocationLabel}
+                <ChevronDown className="w-3.5 h-3.5 text-blue-400" />
+              </div>
+
               <a
                 href="https://wa.me/919876543210"
                 target="_blank"
@@ -130,14 +176,21 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               </Link>
             </div>
 
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              data-testid="mobile-menu-toggle"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+            {/* Mobile right side */}
+            <div className="md:hidden flex items-center gap-2">
+              <div className="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-full bg-blue-50 border border-blue-100 text-xs font-semibold text-blue-700">
+                <MapPin className="w-3.5 h-3.5 text-blue-500" />
+                {navLocationLabel}
+              </div>
+
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                data-testid="mobile-menu-toggle"
+              >
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -155,6 +208,28 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 Track Repair
               </Link>
             </div>
+
+            <div className="px-4 pb-3">
+              <p className="text-xs font-semibold text-gray-400 mb-2 flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5" /> Select location
+              </p>
+              <div className="grid grid-cols-2 gap-2 max-h-44 overflow-y-auto pr-1">
+                {POPULAR_LOCATIONS.map((loc) => (
+                  <button
+                    key={loc}
+                    onClick={() => handleLocationClick(loc)}
+                    className={`rounded-xl px-3 py-2 text-sm font-medium border transition-all text-left ${
+                      currentLocation === loc
+                        ? 'bg-blue-50 border-blue-200 text-blue-700'
+                        : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {loc}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="px-4 pb-4 grid grid-cols-2 gap-2">
               <a
                 href="https://wa.me/919876543210"
@@ -220,13 +295,15 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               </h4>
               <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                 {POPULAR_LOCATIONS.map((loc) => (
-                  <Link
+                  <button
                     key={loc}
-                    to={`/repair/${loc.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="text-xs text-gray-500 hover:text-blue-400 transition-colors leading-relaxed"
+                    onClick={() => handleLocationClick(loc)}
+                    className={`text-left text-xs transition-colors leading-relaxed ${
+                      currentLocation === loc ? 'text-blue-400 font-semibold' : 'text-gray-500 hover:text-blue-400'
+                    }`}
                   >
                     {loc}
-                  </Link>
+                  </button>
                 ))}
               </div>
             </div>

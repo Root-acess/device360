@@ -11,18 +11,34 @@ import {
   Package,
   Settings,
   ThumbsUp,
-  Video,
   Phone,
   MapPin,
   Zap,
   Sparkles,
   Play,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { testimonials, brands } from '../data/mockData';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const [currentLocation, setCurrentLocation] = useState('Bengaluru');
+
+  useEffect(() => {
+    const syncLocation = () => {
+      setCurrentLocation(localStorage.getItem('device360Location') || 'Bengaluru');
+    };
+
+    syncLocation();
+    window.addEventListener('storage', syncLocation);
+    window.addEventListener('device360-location-change', syncLocation as EventListener);
+
+    return () => {
+      window.removeEventListener('storage', syncLocation);
+      window.removeEventListener('device360-location-change', syncLocation as EventListener);
+    };
+  }, []);
 
   const usps = [
     { icon: Eye, title: 'Watch Repair LIVE', desc: 'Real-time video stream of your repair in progress' },
@@ -68,9 +84,14 @@ export const HomePage: React.FC = () => {
               transition={{ duration: 0.7 }}
               className="space-y-7"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-blue-100 shadow-sm text-sm font-medium text-blue-700">
+              <div className="inline-flex flex-wrap items-center gap-2 px-4 py-2 rounded-full bg-white border border-blue-100 shadow-sm text-sm font-medium text-blue-700">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                4.9 Rating · 1,000+ Repairs · Bengaluru
+                <span>4.9 Rating · 1,000+ Repairs</span>
+                <span className="text-gray-300">•</span>
+                <span className="inline-flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-blue-500" />
+                  {currentLocation}
+                </span>
               </div>
 
               <div className="space-y-4">
@@ -135,11 +156,9 @@ export const HomePage: React.FC = () => {
               <div className="flex items-center gap-2 flex-wrap pt-1">
                 <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                 <span className="text-xs text-gray-400">Serving:</span>
-                {popularLocations.slice(0, 4).map((loc) => (
-                  <span key={loc} className="text-xs text-gray-600 bg-white border border-gray-200 px-2.5 py-1 rounded-full shadow-sm">
-                    {loc}
-                  </span>
-                ))}
+                <span className="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-full shadow-sm">
+                  {currentLocation}
+                </span>
                 <button onClick={() => navigate('/repair')} className="text-xs text-blue-600 font-medium hover:underline">
                   +more
                 </button>
@@ -168,13 +187,11 @@ export const HomePage: React.FC = () => {
                   <source src={video} type="video/mp4" />
                 </video>
 
-                {/* Clean live badge */}
                 <div className="absolute top-4 left-4 z-20 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/92 backdrop-blur-md text-red-600 font-bold text-xs shadow-md border border-white/70">
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                   LIVE Repair Stream
                 </div>
 
-                {/* Minimal info chip on bottom */}
                 <div className="absolute bottom-4 left-4 right-4 z-20 flex items-end justify-between gap-3">
                   <div className="inline-flex items-center gap-2.5 rounded-2xl bg-white/92 backdrop-blur-md px-4 py-3 shadow-xl border border-white/70 max-w-[72%]">
                     <div className="w-10 h-10 rounded-2xl bg-blue-50 flex items-center justify-center shrink-0">
@@ -187,16 +204,6 @@ export const HomePage: React.FC = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Floating metric chips */}
-              <motion.div
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-                className="absolute -bottom-5 -left-3 sm:-left-6 bg-white rounded-2xl shadow-xl border border-gray-100 px-4 py-3 flex items-center gap-3"
-              >
-
-              </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, x: 16 }}
@@ -236,9 +243,7 @@ export const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">Why Device360</p>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-3">
-              Why thousands choose us
-            </h2>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-3">Why thousands choose us</h2>
             <p className="text-gray-500 text-lg max-w-xl mx-auto">A repair experience designed to feel premium, transparent, and effortless.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -287,9 +292,7 @@ export const HomePage: React.FC = () => {
                   className="relative p-6 rounded-2xl bg-white border border-gray-100 text-center shadow-sm hover:shadow-md hover:border-blue-100 transition-all"
                   data-testid={`how-it-works-step-${s.n}`}
                 >
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow">
-                    {s.n}
-                  </div>
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow">{s.n}</div>
                   <Icon className="w-7 h-7 mx-auto mb-3 text-blue-500 mt-2" />
                   <h4 className="font-bold text-gray-900 text-sm mb-1">{s.title}</h4>
                   <p className="text-xs text-gray-500">{s.desc}</p>
@@ -363,9 +366,7 @@ export const HomePage: React.FC = () => {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-medium mb-6">
             <Zap className="w-3.5 h-3.5" /> Most repairs done same day
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 tracking-tight">
-            Ready to get your phone fixed?
-          </h2>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 tracking-tight">Ready to get your phone fixed?</h2>
           <p className="text-blue-100 text-lg mb-8">Check your price in 30 seconds. No commitments.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button

@@ -22,20 +22,22 @@ function App() {
         style={{
           opacity: loaded ? 1 : 0,
           transition: 'opacity 0.5s ease',
-          visibility: loaded ? 'visible' : 'hidden'
+          visibility: loaded ? 'visible' : 'hidden',
         }}
       >
         <BrowserRouter>
           <Layout>
             <Routes>
               <Route path="/" element={<HomePage />} />
+
+              {/* Repair flow for default and location-based URLs */}
               <Route path="/repair" element={<RepairFlow />} />
+              <Route path="/repair/:location" element={<RepairFlow />} />
+
               <Route path="/dashboard/:bookingId" element={<Dashboard />} />
 
-              {/* ✅ NEW LOGIN ROUTE */}
               <Route path="/admin/login" element={<AdminLogin />} />
 
-              {/* ✅ PROTECTED ADMIN */}
               <Route
                 path="/admin"
                 element={
