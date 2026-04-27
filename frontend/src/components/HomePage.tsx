@@ -1,5 +1,23 @@
 import { motion } from 'framer-motion';
-import { Clock, Eye, Truck, Star, ArrowRight, Shield, CheckCircle, Package, Settings, ThumbsUp, Video, Phone, MapPin, Zap } from 'lucide-react';
+import video from '../assets/v2.mp4';
+import {
+  Clock,
+  Eye,
+  Truck,
+  Star,
+  ArrowRight,
+  Shield,
+  CheckCircle,
+  Package,
+  Settings,
+  ThumbsUp,
+  Video,
+  Phone,
+  MapPin,
+  Zap,
+  Sparkles,
+  Play,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { testimonials, brands } from '../data/mockData';
 
@@ -7,68 +25,81 @@ export const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   const usps = [
-    { icon: Eye,    title: 'Watch Repair LIVE',       desc: 'Real-time video stream of your repair in progress' },
-    { icon: Clock,  title: '60-Minute Repairs',        desc: 'Most repairs finished under an hour in our lab' },
-    { icon: Truck,  title: 'Free Doorstep Pickup',     desc: 'We collect and deliver at your convenience' },
-    { icon: Shield, title: '6-Month Warranty',         desc: 'Every repair backed by our quality guarantee' },
+    { icon: Eye, title: 'Watch Repair LIVE', desc: 'Real-time video stream of your repair in progress' },
+    { icon: Clock, title: '60-Minute Repairs', desc: 'Most repairs finished under an hour in our lab' },
+    { icon: Truck, title: 'Free Doorstep Pickup', desc: 'We collect and deliver at your convenience' },
+    { icon: Shield, title: '6-Month Warranty', desc: 'Every repair backed by our quality guarantee' },
   ];
 
   const steps = [
-    { n: 1, icon: Settings, title: 'Select Repair',   desc: 'Choose your device & issue' },
-    { n: 2, icon: Package,  title: 'Free Pickup',     desc: 'Porter collects from your door' },
-    { n: 3, icon: Eye,      title: 'Watch LIVE',      desc: 'See the repair in real-time' },
-    { n: 4, icon: ThumbsUp, title: 'Quality Check',   desc: 'Tested before delivery' },
-    { n: 5, icon: Truck,    title: 'Delivered Back',  desc: 'Device returned to you' },
+    { n: 1, icon: Settings, title: 'Select Repair', desc: 'Choose your device & issue' },
+    { n: 2, icon: Package, title: 'Free Pickup', desc: 'Pickup from your doorstep' },
+    { n: 3, icon: Eye, title: 'Watch LIVE', desc: 'See the repair in real-time' },
+    { n: 4, icon: ThumbsUp, title: 'Quality Check', desc: 'Tested before delivery' },
+    { n: 5, icon: Truck, title: 'Delivered Back', desc: 'Device returned to you' },
   ];
 
   const popularLocations = [
-    'Indiranagar', 'Koramangala', 'Whitefield', 'Marathahalli',
-    'HSR Layout', 'Electronic City', 'Hoskote', 'Jayanagar',
+    'Indiranagar',
+    'Koramangala',
+    'Whitefield',
+    'Marathahalli',
+    'HSR Layout',
+    'Electronic City',
+    'Hoskote',
+    'Jayanagar',
   ];
 
   return (
-    <div className="overflow-x-hidden">
-
-      {/* ── Hero ──────────────────────────────────────────────────── */}
-      <section className="relative bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-50 py-16 lg:py-24 overflow-hidden">
-        {/* Decorative blobs */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-100/40 rounded-full blur-3xl translate-x-1/2 -translate-y-1/4 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-indigo-100/30 rounded-full blur-3xl -translate-x-1/3 translate-y-1/4 pointer-events-none" />
+    <div className="overflow-x-hidden bg-white">
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-[radial-gradient(circle_at_top_right,_rgba(59,130,246,0.18),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(99,102,241,0.14),_transparent_28%),linear-gradient(180deg,#f8fbff_0%,#ffffff_70%)] py-16 lg:py-24">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-24 left-10 w-72 h-72 rounded-full bg-blue-200/30 blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-indigo-200/20 blur-3xl" />
+        </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-
-            {/* Left: copy */}
+            {/* Left content */}
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.7 }}
               className="space-y-7"
             >
-              {/* Trust badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-blue-100 shadow-sm text-sm font-medium text-blue-700">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-blue-100 shadow-sm text-sm font-medium text-blue-700">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                 4.9 Rating · 1,000+ Repairs · Bengaluru
               </div>
 
-              {/* Main headline */}
-              <div>
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-none tracking-tighter">
-                  REPAIR.<br />
-                  <span className="text-blue-600">RENEW.</span><br />
+              <div className="space-y-4">
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-950 leading-none tracking-tight">
+                  REPAIR.
+                  <br />
+                  <span className="text-blue-600">RENEW.</span>
+                  <br />
                   RELAX.
                 </h1>
-                <p className="mt-4 text-base sm:text-lg text-gray-500 font-medium">
-                  India's Most Trusted <span className="text-gray-900 font-bold">360° Live Repair Lab</span>
+                <p className="text-base sm:text-lg text-gray-500 font-medium max-w-xl">
+                  India&apos;s most trusted <span className="text-gray-900 font-bold">360° live repair experience</span>.
+                  Free pickup, fast repair, transparent pricing, and real-time video updates.
                 </p>
               </div>
 
-              {/* Sub-copy */}
-              <p className="text-gray-500 leading-relaxed max-w-md">
-                The only repair service where you <strong className="text-gray-800">watch your phone get fixed in real-time</strong> via live video. Free pickup, 60-min repair, delivered back.
-              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl">
+                {[
+                  { value: '42 min', label: 'Avg. repair time' },
+                  { value: '6 mo', label: 'Warranty' },
+                  { value: '100%', label: 'Live tracking' },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-2xl border border-gray-100 bg-white/90 backdrop-blur-xl p-4 shadow-sm">
+                    <p className="text-2xl font-black text-gray-950">{item.value}</p>
+                    <p className="mt-1 text-xs text-gray-500">{item.label}</p>
+                  </div>
+                ))}
+              </div>
 
-              {/* Checklist */}
               <ul className="space-y-2">
                 {[
                   'Instant transparent pricing',
@@ -83,11 +114,10 @@ export const HomePage: React.FC = () => {
                 ))}
               </ul>
 
-              {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => navigate('/repair')}
-                  className="group flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-blue-600 text-white font-bold text-base hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 hover:shadow-xl hover:-translate-y-0.5"
+                  className="group inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-blue-600 text-white font-bold text-base hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 hover:shadow-xl hover:-translate-y-0.5"
                   data-testid="check-price-button"
                 >
                   Check Price Instantly
@@ -95,72 +125,91 @@ export const HomePage: React.FC = () => {
                 </button>
                 <a
                   href="tel:+919876543210"
-                  className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl border-2 border-gray-200 bg-white text-gray-700 font-semibold text-base hover:border-blue-300 hover:text-blue-600 transition-all hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl border-2 border-gray-200 bg-white text-gray-700 font-semibold text-base hover:border-blue-300 hover:text-blue-600 transition-all hover:-translate-y-0.5"
                 >
                   <Phone className="w-4 h-4" />
                   Call Us Now
                 </a>
               </div>
 
-              {/* Location chips */}
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap pt-1">
                 <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                 <span className="text-xs text-gray-400">Serving:</span>
                 {popularLocations.slice(0, 4).map((loc) => (
-                  <span key={loc} className="text-xs text-gray-500 bg-white border border-gray-200 px-2.5 py-1 rounded-full">
+                  <span key={loc} className="text-xs text-gray-600 bg-white border border-gray-200 px-2.5 py-1 rounded-full shadow-sm">
                     {loc}
                   </span>
                 ))}
-                <button onClick={() => navigate('/repair')} className="text-xs text-blue-600 font-medium hover:underline">+more</button>
+                <button onClick={() => navigate('/repair')} className="text-xs text-blue-600 font-medium hover:underline">
+                  +more
+                </button>
               </div>
             </motion.div>
 
-            {/* Right: video mockup */}
+            {/* Right video */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.15 }}
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.12 }}
               className="relative"
             >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-100">
+              <div className="relative rounded-[32px] overflow-hidden border border-white/70 shadow-[0_30px_80px_rgba(15,23,42,0.18)] bg-black">
+                <div className="absolute inset-0 z-10 bg-[linear-gradient(180deg,rgba(2,6,23,0.10)_0%,rgba(2,6,23,0.03)_40%,rgba(2,6,23,0.18)_100%)]" />
+
                 <video
-                  autoPlay loop muted playsInline
-                  className="w-full h-full object-cover aspect-video"
-                  poster="https://images.unsplash.com/photo-1651493706899-72a59df915ac?w=800&h=600&fit=crop"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  className="w-full h-full object-cover aspect-[4/5] sm:aspect-[16/10] lg:aspect-[4/5]"
+                  poster="https://images.unsplash.com/photo-1651493706899-72a59df915ac?w=1200&h=900&fit=crop"
                 >
-                  <source src="https://assets.mixkit.co/videos/preview/mixkit-person-repairing-a-smartphone-41482-large.mp4" type="video/mp4" />
+                  <source src={video} type="video/mp4" />
                 </video>
-                {/* Live badge */}
-                <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-red-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-lg">
-                  <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+
+                {/* Clean live badge */}
+                <div className="absolute top-4 left-4 z-20 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/92 backdrop-blur-md text-red-600 font-bold text-xs shadow-md border border-white/70">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                   LIVE Repair Stream
+                </div>
+
+                {/* Minimal info chip on bottom */}
+                <div className="absolute bottom-4 left-4 right-4 z-20 flex items-end justify-between gap-3">
+                  <div className="inline-flex items-center gap-2.5 rounded-2xl bg-white/92 backdrop-blur-md px-4 py-3 shadow-xl border border-white/70 max-w-[72%]">
+                    <div className="w-10 h-10 rounded-2xl bg-blue-50 flex items-center justify-center shrink-0">
+                      <Play className="w-4 h-4 text-blue-600 fill-blue-600" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[10px] uppercase tracking-[0.14em] text-gray-400 font-bold">Cinematic repair video</p>
+                      <p className="text-sm font-bold text-gray-950 truncate">Premium service experience</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Floating stat cards */}
+              {/* Floating metric chips */}
               <motion.div
-                initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}
-                className="absolute -bottom-5 -left-5 bg-white rounded-xl shadow-xl border border-gray-100 px-4 py-3 flex items-center gap-3"
+                initial={{ opacity: 0, x: -16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+                className="absolute -bottom-5 -left-3 sm:-left-6 bg-white rounded-2xl shadow-xl border border-gray-100 px-4 py-3 flex items-center gap-3"
               >
-                <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
-                  <Clock className="w-4 h-4 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-400">Avg. repair time</p>
-                  <p className="font-bold text-gray-900 text-sm">42 minutes</p>
-                </div>
+
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}
-                className="absolute -top-5 -right-5 bg-white rounded-xl shadow-xl border border-gray-100 px-4 py-3 flex items-center gap-3"
+                initial={{ opacity: 0, x: 16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 }}
+                className="absolute -top-5 -right-3 sm:-right-6 bg-white rounded-2xl shadow-xl border border-gray-100 px-4 py-3 flex items-center gap-3"
               >
                 <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
-                  <Video className="w-4 h-4 text-green-600" />
+                  <Sparkles className="w-4 h-4 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400">Live repairs today</p>
-                  <p className="font-bold text-gray-900 text-sm">18 active</p>
+                  <p className="text-xs text-gray-400">Service quality</p>
+                  <p className="font-bold text-gray-950 text-sm">Premium care</p>
                 </div>
               </motion.div>
             </motion.div>
@@ -168,7 +217,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ── Brand logos ───────────────────────────────────────────── */}
+      {/* Brand logos */}
       <section className="py-10 border-y border-gray-100 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6">We repair all major brands</p>
@@ -182,7 +231,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ── USPs ──────────────────────────────────────────────────── */}
+      {/* USPs */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
@@ -190,7 +239,7 @@ export const HomePage: React.FC = () => {
             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-3">
               Why thousands choose us
             </h2>
-            <p className="text-gray-500 text-lg max-w-xl mx-auto">We built the repair experience we always wanted — transparent, fast, and honest.</p>
+            <p className="text-gray-500 text-lg max-w-xl mx-auto">A repair experience designed to feel premium, transparent, and effortless.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {usps.map((u, i) => {
@@ -217,7 +266,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ── How it works ──────────────────────────────────────────── */}
+      {/* How it works */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
@@ -238,7 +287,9 @@ export const HomePage: React.FC = () => {
                   className="relative p-6 rounded-2xl bg-white border border-gray-100 text-center shadow-sm hover:shadow-md hover:border-blue-100 transition-all"
                   data-testid={`how-it-works-step-${s.n}`}
                 >
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow">{s.n}</div>
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow">
+                    {s.n}
+                  </div>
                   <Icon className="w-7 h-7 mx-auto mb-3 text-blue-500 mt-2" />
                   <h4 className="font-bold text-gray-900 text-sm mb-1">{s.title}</h4>
                   <p className="text-xs text-gray-500">{s.desc}</p>
@@ -249,7 +300,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ── Popular Locations ─────────────────────────────────────── */}
+      {/* Popular Locations */}
       <section className="py-16 bg-white border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
@@ -257,11 +308,7 @@ export const HomePage: React.FC = () => {
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">Repair near you</h2>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            {[
-              'Indiranagar', 'Koramangala', 'Whitefield', 'Marathahalli',
-              'HSR Layout', 'Electronic City', 'Hoskote', 'Jayanagar',
-              'Bannerghatta Road', 'Malleshwaram', 'Yelahanka', 'Sarjapur Road',
-            ].map((loc) => (
+            {popularLocations.map((loc) => (
               <button
                 key={loc}
                 onClick={() => navigate(`/repair/${loc.toLowerCase().replace(/\s+/g, '-')}`)}
@@ -274,7 +321,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ── Testimonials ──────────────────────────────────────────── */}
+      {/* Testimonials */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
@@ -303,14 +350,14 @@ export const HomePage: React.FC = () => {
                     <div className="flex">{[...Array(t.rating)].map((_, j) => <Star key={j} className="w-3 h-3 fill-amber-400 text-amber-400" />)}</div>
                   </div>
                 </div>
-                <p className="text-gray-600 text-sm leading-relaxed">"{t.text}"</p>
+                <p className="text-gray-600 text-sm leading-relaxed">&quot;{t.text}&quot;</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── CTA banner ────────────────────────────────────────────── */}
+      {/* CTA */}
       <section className="py-20 bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-600">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-medium mb-6">
@@ -323,14 +370,14 @@ export const HomePage: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={() => navigate('/repair')}
-              className="px-10 py-4 rounded-xl bg-white text-blue-700 font-bold text-lg hover:bg-blue-50 transition-all shadow-xl hover:-translate-y-0.5"
+              className="px-10 py-4 rounded-2xl bg-white text-blue-700 font-bold text-lg hover:bg-blue-50 transition-all shadow-xl hover:-translate-y-0.5"
               data-testid="get-quote-button"
             >
               Get Instant Quote →
             </button>
             <a
               href="tel:+919876543210"
-              className="px-10 py-4 rounded-xl bg-white/10 border border-white/30 text-white font-semibold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-2"
+              className="px-10 py-4 rounded-2xl bg-white/10 border border-white/30 text-white font-semibold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-2"
             >
               <Phone className="w-5 h-5" /> Call Us
             </a>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Menu, X, MapPin, Phone, Mail, Clock, Instagram, Twitter, Facebook, Youtube } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiPhone } from 'react-icons/fi';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo3.png';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,22 +15,62 @@ const POPULAR_LOCATIONS = [
   'Jayanagar', 'Malleshwaram', 'Yelahanka', 'Sarjapur Road',
 ];
 
+const TOP_BANNER_ITEMS = [
+  '⚡ Same-day repair',
+  '🚗 Free pickup & delivery',
+  '🛡️ 6-month warranty on all repairs',
+  '📍 Serving all of Bengaluru',
+];
+
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-white">
+      <style>{`
+        @keyframes device360-marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+
+        .device360-marquee {
+          display: flex;
+          width: max-content;
+          animation: device360-marquee 18s linear infinite;
+          will-change: transform;
+        }
+
+        .device360-marquee:hover {
+          animation-play-state: paused;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .device360-marquee {
+            animation: none;
+            transform: none;
+          }
+        }
+      `}</style>
+
       {/* Top announcement bar */}
-      <div className="bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-600 text-white text-xs py-2 px-4 text-center font-medium tracking-wide">
-        <span className="inline-flex items-center gap-4 flex-wrap justify-center">
-          <span>⚡ Same-day repair</span>
-          <span className="opacity-40">|</span>
-          <span>🚗 Free pickup &amp; delivery</span>
-          <span className="opacity-40">|</span>
-          <span>🛡️ 6-month warranty on all repairs</span>
-          <span className="opacity-40">|</span>
-          <span>📍 Serving all of Bengaluru</span>
-        </span>
+      <div className="relative overflow-hidden bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-600 text-white text-xs py-2">
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-blue-700 to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-indigo-600 to-transparent" />
+
+        <div className="overflow-hidden">
+          <div className="device360-marquee gap-10 px-4 font-medium tracking-wide whitespace-nowrap">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="flex items-center gap-4 sm:gap-6 shrink-0 pr-10">
+                {TOP_BANNER_ITEMS.map((item, idx) => (
+                  <span key={`${item}-${idx}`} className="inline-flex items-center gap-4">
+                    <span>{item}</span>
+                    {idx !== TOP_BANNER_ITEMS.length - 1 && <span className="opacity-40">|</span>}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Nav */}
@@ -62,7 +102,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* Desktop CTA — icons only */}
             <div className="hidden md:flex items-center gap-2">
-              {/* WhatsApp icon button */}
               <a
                 href="https://wa.me/919876543210"
                 target="_blank"
@@ -74,7 +113,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <FaWhatsapp className="w-4 h-4" />
               </a>
 
-              {/* Call icon button */}
               <a
                 href="tel:+919876543210"
                 title="Call us"
@@ -84,7 +122,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <FiPhone className="w-4 h-4" />
               </a>
 
-              {/* Book repair CTA */}
               <Link
                 to="/repair"
                 className="ml-1 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-blue-200 hover:-translate-y-0.5"
@@ -106,10 +143,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div
-            className="md:hidden border-t border-gray-100 bg-white"
-            data-testid="mobile-menu"
-          >
+          <div className="md:hidden border-t border-gray-100 bg-white" data-testid="mobile-menu">
             <div className="px-4 pt-3 pb-4 space-y-1">
               <Link to="/" className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-gray-700 font-medium hover:bg-gray-50" onClick={() => setMobileMenuOpen(false)}>
                 Home
@@ -147,13 +181,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       <main>{children}</main>
 
-      {/* ─── Footer ─── */}
+      {/* Footer */}
       <footer className="bg-gray-950 text-gray-400 pt-16 pb-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          {/* Top grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-
             {/* Brand */}
             <div className="lg:col-span-1">
               <div className="flex items-center gap-2 mb-4">
@@ -162,7 +193,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               <p className="text-gray-500 text-sm leading-relaxed mb-5">
                 India's first mobile repair service with <span className="text-white font-medium">live video tracking</span>. Transparent pricing, free pickup &amp; delivery, 6-month warranty.
               </p>
-              {/* Social icons */}
               <div className="flex items-center gap-3">
                 {[
                   { icon: Instagram, href: '#', label: 'Instagram' },
@@ -254,7 +284,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </li>
               </ul>
 
-              {/* WhatsApp CTA */}
               <a
                 href="https://wa.me/919876543210"
                 target="_blank"
@@ -267,7 +296,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
           </div>
 
-          {/* Divider */}
           <div className="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-xs text-gray-600">
               © 2026 Device360. All rights reserved.
