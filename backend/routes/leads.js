@@ -1,9 +1,10 @@
-const express = require("express");
+import express from "express";
+import { db } from "../firebase.js";
+
 const router = express.Router();
-const { db } = require("../firebase");
 
 // ─── POST /api/leads ──────────────────────────────────────────────────────────
-// Saves a full booking/lead to Firestore and returns a bookingId
+// Creates a new booking and returns bookingId
 // ─────────────────────────────────────────────────────────────────────────────
 router.post("/", async (req, res) => {
   try {
@@ -11,6 +12,7 @@ router.post("/", async (req, res) => {
       name,
       phone,
       address,
+      addressDetails,
       timeSlot,
       brand,
       model,
@@ -21,46 +23,50 @@ router.post("/", async (req, res) => {
       isLiveRepair,
     } = req.body;
 
-    // Basic validation
+    // Validation
     if (!name || !phone || !brand || !model || !issue) {
-      return res.status(400).json({ error: "Missing required fields: name, phone, brand, model, issue" });
+      return res.status(400).json({
+        error: "Missing required fields: name, phone, brand, model, issue",
+      });
     }
 
     const bookingData = {
       name,
       phone,
-      address: address || "",
-      timeSlot: timeSlot || "",
+      address:        address        || "",
+      addressDetails: addressDetails || {},
+      timeSlot:       timeSlot       || "",
       brand,
       model,
       issue,
-      price: price || 0,
-      estimatedTime: estimatedTime || "",
-      doorstepPickup: doorstepPickup || true,
-      isLiveRepair: isLiveRepair || false,
-      status: "pending",        // pending | confirmed | in_progress | completed | cancelled
-      videoLink: null,          // filled by technician later
-      technicianId: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      price:          price          || 0,
+      estimatedTime:  estimatedTime  || "",
+      doorstepPickup: doorstepPickup ?? true,
+      isLiveRepair:   isLiveRepair   || false,
+      status:         "pending",   // pending | confirmed | picked_up | in_progress | completed | cancelled
+      videoLink:      null,
+      technicianId:   null,
+      createdAt:      new Date().toISOString(),
+      updatedAt:      new Date().toISOString(),
     };
 
-    // Save to Firestore — auto-generate document ID
     const docRef = await db.collection("leads").add(bookingData);
 
+    console.log(`[leads] ✅ Created booking ${docRef.id} for ${name} (${phone})`);
+
     return res.status(201).json({
-      success: true,
+      success:   true,
       bookingId: docRef.id,
-      message: "Booking created successfully",
+      message:   "Booking created successfully",
     });
   } catch (err) {
-    console.error("create-lead error:", err);
+    console.error("[leads] create error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // ─── GET /api/leads ───────────────────────────────────────────────────────────
-// Fetch all leads — used by Dashboard
+// Returns all leads ordered by newest first — used by Admin Dashboard
 // ─────────────────────────────────────────────────────────────────────────────
 router.get("/", async (req, res) => {
   try {
@@ -76,13 +82,13 @@ router.get("/", async (req, res) => {
 
     return res.json({ success: true, leads });
   } catch (err) {
-    console.error("get-leads error:", err);
+    console.error("[leads] get-all error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // ─── GET /api/leads/:id ───────────────────────────────────────────────────────
-// Fetch a single lead by booking ID
+// Returns a single lead — used by customer Dashboard to track repair
 // ─────────────────────────────────────────────────────────────────────────────
 router.get("/:id", async (req, res) => {
   try {
@@ -92,32 +98,40 @@ router.get("/:id", async (req, res) => {
       return res.status(404).json({ error: "Booking not found" });
     }
 
-    return res.json({ success: true, lead: { id: doc.id, ...doc.data() } });
+    return res.json({
+      success: true,
+      lead: { id: doc.id, ...doc.data() },
+    });
   } catch (err) {
-    console.error("get-lead error:", err);
+    console.error("[leads] get-one error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // ─── PATCH /api/leads/:id ─────────────────────────────────────────────────────
-// Update lead status or video link (used by Dashboard/technician)
+// Updates status, videoLink, price, or technicianId
+// Used by Admin Dashboard
 // ─────────────────────────────────────────────────────────────────────────────
 router.patch("/:id", async (req, res) => {
   try {
-    const { status, videoLink, technicianId } = req.body;
+    const { status, videoLink, technicianId, price } = req.body;
+
     const updates = { updatedAt: new Date().toISOString() };
 
-    if (status) updates.status = status;
-    if (videoLink) updates.videoLink = videoLink;
-    if (technicianId) updates.technicianId = technicianId;
+    if (status       !== undefined) updates.status       = status;
+    if (videoLink    !== undefined) updates.videoLink    = videoLink;
+    if (technicianId !== undefined) updates.technicianId = technicianId;
+    if (price        !== undefined) updates.price        = price;
 
     await db.collection("leads").doc(req.params.id).update(updates);
 
+    console.log(`[leads] ✅ Updated booking ${req.params.id}`, updates);
+
     return res.json({ success: true, message: "Booking updated" });
   } catch (err) {
-    console.error("update-lead error:", err);
+    console.error("[leads] update error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
 
-module.exports = router;
+export default router;
